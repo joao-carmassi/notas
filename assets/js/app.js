@@ -1,92 +1,34 @@
-const botaoEnviar = document.getElementById('enviar');
-const PaiLista = document.querySelector('.lista_tarefas');
-const textBox = document.querySelector('input');
-var conteudoTextBox;
+document.addEventListener('DOMContentLoaded', function () {
+    const loginInput = document.getElementById('login');
+    const senhaInput = document.getElementById('senha');
+    const buttonLogin = document.getElementById('buttonLogin');
 
-const listaDeElementos = JSON.parse(localStorage.getItem('itens')) || [];
+    const usuarios = [
+        { usuario: 'admin', senha: 'admin' },
+    ];
 
-var ano;
-var dataAtual;
-var dia;
-var mes;
+    buttonLogin.addEventListener('click', function () {
+        realizarLogin();
+    });
 
-function enviaLista() {
-    localStorage.setItem('itens', JSON.stringify(listaDeElementos));
-}
-
-function criaNota(conteudoTextBox, ano, dia, mes) {
-    const elementoItem = document.createElement('elementoItem');
-    elementoItem.classList.add('tarefas');
-
-    const elementoDivTarefasTitulo = document.createElement('div');
-    elementoDivTarefasTitulo.classList.add('tarefas__titulo');
-    elementoItem.append(elementoDivTarefasTitulo);
-
-    const elementoDivTarefasTituloH2 = document.createElement('h2');
-    elementoDivTarefasTituloH2.classList.add('tarefas__titulo-titulo');
-
-    elementoDivTarefasTituloH2.innerHTML = `${dia}/${mes}/${ano}`;
-    elementoDivTarefasTitulo.append(elementoDivTarefasTituloH2);
-
-    const botaoEditar = document.createElement('button');
-    elementoDivTarefasTitulo.append(botaoEditar);
-    
-    const svg = document.createElement('img');
-    svg.setAttribute('src', './assets/imgs/caneta.svg');
-    botaoEditar.append(svg);
-    
-    const elementoDivTarefasConteudo = document.createElement('div');
-    elementoDivTarefasConteudo.classList.add('tarefas__conteudo');
-    elementoDivTarefasConteudo.textContent = conteudoTextBox;
-    elementoItem.append(elementoDivTarefasConteudo);
-    
-    const elementoDivTarefasConteudoP = document.createElement('p');
-    elementoDivTarefasConteudo.append(elementoDivTarefasConteudoP);
-    
-    botaoEditar.onclick = () => {
-        const attTarefa = prompt('Editando nota:');
-        if (attTarefa) {
-            elementoDivTarefasConteudoP.textContent = attTarefa
-            itemLista.item = attTarefa;
-            enviaLista();
+    senhaInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            realizarLogin();
         }
-    }
+    });
 
-    return elementoItem;
-}
+    function realizarLogin() {
+        const usuarioDigitado = loginInput.value;
+        const senhaDigitada = senhaInput.value;
 
-botaoEnviar.addEventListener('click', function () {
-    conteudoTextBox = textBox.value;
-    if (textBox.value) {
-        ano = new Date().getFullYear().toString().slice(-2);
-        dataAtual = new Date();
-        dia = dataAtual.getDate();
-        mes = dataAtual.getMonth() + 1;
-        const containerItem = criaNota(conteudoTextBox, ano, dia, mes);
-        var itemLista = {
-            item: conteudoTextBox,
-            ano,
-            dia,
-            mes
-        }
-        listaDeElementos.push(itemLista);
-        enviaLista()
+        // Verifica se as credenciais estão na lista
+        const usuarioEncontrado = usuarios.find(user => user.usuario === usuarioDigitado && user.senha === senhaDigitada);
 
-        if (PaiLista.firstChild) {
-            PaiLista.insertBefore(containerItem, PaiLista.firstChild);
+        if (usuarioEncontrado) {
+            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
         } else {
-            PaiLista.appendChild(containerItem);
+            var paragrafo = document.querySelector('p')
+            paragrafo.innerHTML = 'Usuário ou senha incorretos. Tente novamente.'
         }
-
-        textBox.value = '';
-    }
-});
-
-listaDeElementos.forEach(itemLista => {
-    const containerItem = criaNota(itemLista.item, itemLista.ano, itemLista.dia, itemLista.mes);
-    if (PaiLista.firstChild) {
-        PaiLista.insertBefore(containerItem, PaiLista.firstChild);
-    } else {
-        PaiLista.appendChild(containerItem);
     }
 });
