@@ -30,19 +30,19 @@ function criaNota(conteudoTextBox, ano, dia, mes) {
 
     const botaoEditar = document.createElement('button');
     elementoDivTarefasTitulo.append(botaoEditar);
-    
+
     const svg = document.createElement('img');
     svg.setAttribute('src', './assets/imgs/caneta.svg');
     botaoEditar.append(svg);
-    
+
     const elementoDivTarefasConteudo = document.createElement('div');
     elementoDivTarefasConteudo.classList.add('tarefas__conteudo');
     elementoDivTarefasConteudo.textContent = conteudoTextBox;
     elementoItem.append(elementoDivTarefasConteudo);
-    
+
     const elementoDivTarefasConteudoP = document.createElement('p');
     elementoDivTarefasConteudo.append(elementoDivTarefasConteudoP);
-    
+
     botaoEditar.onclick = () => {
         const attTarefa = prompt('Editando nota:');
         if (attTarefa) {
@@ -56,6 +56,16 @@ function criaNota(conteudoTextBox, ano, dia, mes) {
 }
 
 botaoEnviar.addEventListener('click', function () {
+    enviaNota()
+});
+
+textBox.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        enviaNota();
+    }
+});
+
+function enviaNota() {
     conteudoTextBox = textBox.value;
     if (textBox.value) {
         ano = new Date().getFullYear().toString().slice(-2);
@@ -80,7 +90,7 @@ botaoEnviar.addEventListener('click', function () {
 
         textBox.value = '';
     }
-});
+}
 
 listaDeElementos.forEach(itemLista => {
     const containerItem = criaNota(itemLista.item, itemLista.ano, itemLista.dia, itemLista.mes);
