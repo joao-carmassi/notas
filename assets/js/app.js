@@ -34,13 +34,21 @@ function attLista() {
     if (textBox.value != '') {
         itemLista = getDate();
         itemLista.item = textBox.value;
-        itemLista.id = listaDeElementos.length;
+        criarID();
 
         listaDeElementos.push(itemLista);
         localStorage.setItem('itens', JSON.stringify(listaDeElementos));
 
         textBox.value = '';
         criarNota();
+    }
+}
+
+function criarID() {
+    if (listaDeElementos.length == 0) {
+        itemLista.id = listaDeElementos.length;
+    } else {
+        itemLista.id = (listaDeElementos[listaDeElementos.length - 1].id + 1);
     }
 }
 
