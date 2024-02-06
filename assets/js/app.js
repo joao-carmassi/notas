@@ -12,23 +12,30 @@ let listaDeElementos = JSON.parse(localStorage.getItem('itens')) || [];
 
 botaoEnviar.addEventListener('click', attLista);
 
+textBox.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        attLista();
+    }
+});
+
 function criarNota() {
     PaiLista.innerHTML = '';
     listaDeElementos.forEach(itemLista => {
-        PaiLista.innerHTML += `
-        <li class="tarefas">
-            <div class="tarefas__titulo">
-                <h2 class="tarefas__titulo-titulo">${itemLista.dia}/${itemLista.mes}/${itemLista.ano}</h2>
-                <button class="botao-deletar" id="${itemLista.id}"><img src="./assets/imgs/lixo.svg" alt="${itemLista.id}"></button>
-            </div>
-            <div class="tarefas__conteudo">
-                <p>${itemLista.item}</p>
-            </div>
-        </li>
-        `
+        PaiLista.insertAdjacentHTML('afterbegin', `
+            <li class="tarefas">
+                <div class="tarefas__titulo">
+                    <h2 class="tarefas__titulo-titulo">${itemLista.dia}/${itemLista.mes}/${itemLista.ano}</h2>
+                    <button class="botao-deletar" id="${itemLista.id}"><img src="./assets/imgs/lixo.svg" alt="${itemLista.id}"></button>
+                </div>
+                <div class="tarefas__conteudo">
+                    <p>${itemLista.item}</p>
+                </div>
+            </li>
+        `);
     });
     verificaBotoes();
 }
+
 
 function attLista() {
     if (textBox.value != '') {
