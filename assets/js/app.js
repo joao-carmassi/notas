@@ -70,7 +70,8 @@ function apagarItem() {
     const idBotao = this.id;
     listaDeElementos = listaDeElementos.filter(item => item.id != idBotao);
     localStorage.setItem('itens', JSON.stringify(listaDeElementos));
-    criarNota();
+    const elemento = document.getElementById(idBotao);
+    elemento.parentNode.parentNode.remove();
 }
 
 criarNota();
