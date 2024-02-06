@@ -1,15 +1,19 @@
+// Queries
 const botaoEnviar = document.getElementById('enviar');
 const PaiLista = document.querySelector('.lista_tarefas');
 const textBox = document.querySelector('input');
-var itemLista;
-var botaoDelete = [];
 
-const listaDeElementos = JSON.parse(localStorage.getItem('itens')) || [];
+// Vars
+let itemLista;
+let botaoDelete = [];
+
+// Local Storage
+let listaDeElementos = JSON.parse(localStorage.getItem('itens')) || [];
 
 botaoEnviar.addEventListener('click', attLista);
 
 function criarNota() {
-    PaiLista.innerHTML = ''
+    PaiLista.innerHTML = '';
     listaDeElementos.forEach(itemLista => {
         PaiLista.innerHTML += `
         <li class="tarefas">
@@ -23,51 +27,50 @@ function criarNota() {
         </li>
         `
     });
+    verificaBotoes();
 }
-criarNota()
 
 function attLista() {
     if (textBox.value != '') {
-        const dataAtual = new Date();
-        const anoNaoFormatado = dataAtual.getFullYear();
-        const diaNaoFormatado = dataAtual.getDate();
-        const mesNaoFormatado = dataAtual.getMonth() + 1;
-
-        const mes = String(mesNaoFormatado).padStart(2, '0');
-        const dia = String(diaNaoFormatado).padStart(2, '0');
-        const ano = String(anoNaoFormatado).padStart(2, '0');
-
-        itemLista = {
-            item: textBox.value,
-            ano,
-            dia,
-            mes,
-            id: listaDeElementos.length
-        }
+        itemLista = getDate();
+        itemLista.item = textBox.value;
+        itemLista.id = listaDeElementos.length;
 
         listaDeElementos.push(itemLista);
-        localStorage.setItem('itens', JSON.stringify(listaDeElementos))
+        localStorage.setItem('itens', JSON.stringify(listaDeElementos));
 
-        textBox.value = ''
+        textBox.value = '';
         criarNota();
     }
-    verificaBotoes()
+}
+
+function getDate() {
+    const dataAtual = new Date();
+    const anoNaoFormatado = dataAtual.getFullYear();
+    const diaNaoFormatado = dataAtual.getDate();
+    const mesNaoFormatado = dataAtual.getMonth() + 1;
+
+    const mes = String(mesNaoFormatado).padStart(2, '0');
+    const dia = String(diaNaoFormatado).padStart(2, '0');
+    const ano = String(anoNaoFormatado).padStart(2, '0');
+
+    return {
+        mes,
+        dia,
+        ano
+    }
 }
 
 function verificaBotoes() {
     botaoDelete = document.querySelectorAll('.botao-deletar');
+    botaoDelete.forEach(botao => botao.addEventListener('click', apagarItem));
 }
-verificaBotoes()
-
-botaoDelete.forEach(botao => botao.addEventListener('click', apagarItem));
 
 function apagarItem() {
     const idBotao = this.id;
-    listaDeElementos.forEach((item, index) => {
-        if (idBotao == item.id) {
-            listaDeElementos.splice(index, 1);
-            criarNota();
-            localStorage.setItem('itens', JSON.stringify(listaDeElementos));
-        }
-    });
+    listaDeElementos = listaDeElementos.filter(item => item.id != idBotao);
+    localStorage.setItem('itens', JSON.stringify(listaDeElementos));
+    criarNota();
 }
+
+criarNota();
