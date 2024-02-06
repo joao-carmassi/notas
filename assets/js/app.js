@@ -1,102 +1,73 @@
 const botaoEnviar = document.getElementById('enviar');
 const PaiLista = document.querySelector('.lista_tarefas');
 const textBox = document.querySelector('input');
-var conteudoTextBox;
+var itemLista;
+var botaoDelete = [];
 
 const listaDeElementos = JSON.parse(localStorage.getItem('itens')) || [];
 
-var ano;
-var dataAtual;
-var dia;
-var mes;
+botaoEnviar.addEventListener('click', attLista);
 
-function enviaLista() {
-    localStorage.setItem('itens', JSON.stringify(listaDeElementos));
+function criarNota() {
+    PaiLista.innerHTML = ''
+    listaDeElementos.forEach(itemLista => {
+        PaiLista.innerHTML += `
+        <li class="tarefas">
+            <div class="tarefas__titulo">
+                <h2 class="tarefas__titulo-titulo">${itemLista.dia}/${itemLista.mes}/${itemLista.ano}</h2>
+                <button class="botao-deletar" id="${itemLista.id}"><img src="./assets/imgs/lixo.svg" alt="${itemLista.id}"></button>
+            </div>
+            <div class="tarefas__conteudo">
+                <p>${itemLista.item}</p>
+            </div>
+        </li>
+        `
+    });
 }
+criarNota()
 
-function criaNota(conteudoTextBox, ano, dia, mes) {
-    const elementoItem = document.createElement('elementoItem');
-    elementoItem.classList.add('tarefas');
+function attLista() {
+    if (textBox.value != '') {
+        const dataAtual = new Date();
+        const anoNaoFormatado = dataAtual.getFullYear();
+        const diaNaoFormatado = dataAtual.getDate();
+        const mesNaoFormatado = dataAtual.getMonth() + 1;
 
-    const elementoDivTarefasTitulo = document.createElement('div');
-    elementoDivTarefasTitulo.classList.add('tarefas__titulo');
-    elementoItem.append(elementoDivTarefasTitulo);
+        const mes = String(mesNaoFormatado).padStart(2, '0');
+        const dia = String(diaNaoFormatado).padStart(2, '0');
+        const ano = String(anoNaoFormatado).padStart(2, '0');
 
-    const elementoDivTarefasTituloH2 = document.createElement('h2');
-    elementoDivTarefasTituloH2.classList.add('tarefas__titulo-titulo');
-
-    elementoDivTarefasTituloH2.innerHTML = `${dia}/${mes}/${ano}`;
-    elementoDivTarefasTitulo.append(elementoDivTarefasTituloH2);
-
-    const botaoEditar = document.createElement('button');
-    elementoDivTarefasTitulo.append(botaoEditar);
-
-    const svg = document.createElement('img');
-    svg.setAttribute('src', './assets/imgs/caneta.svg');
-    botaoEditar.append(svg);
-
-    const elementoDivTarefasConteudo = document.createElement('div');
-    elementoDivTarefasConteudo.classList.add('tarefas__conteudo');
-    elementoDivTarefasConteudo.textContent = conteudoTextBox;
-    elementoItem.append(elementoDivTarefasConteudo);
-
-    const elementoDivTarefasConteudoP = document.createElement('p');
-    elementoDivTarefasConteudo.append(elementoDivTarefasConteudoP);
-
-    botaoEditar.onclick = () => {
-        const attTarefa = prompt('Editando nota:');
-        if (attTarefa) {
-            elementoDivTarefasConteudoP.textContent = attTarefa
-            itemLista.item = attTarefa;
-            enviaLista();
-        }
-    }
-
-    return elementoItem;
-}
-
-botaoEnviar.addEventListener('click', function () {
-    enviaNota()
-});
-
-textBox.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-        enviaNota();
-    }
-});
-
-function enviaNota() {
-    conteudoTextBox = textBox.value;
-    if (textBox.value) {
-        ano = new Date().getFullYear().toString().slice(-2);
-        dataAtual = new Date();
-        dia = dataAtual.getDate();
-        mes = dataAtual.getMonth() + 1;
-        const containerItem = criaNota(conteudoTextBox, ano, dia, mes);
-        var itemLista = {
-            item: conteudoTextBox,
+        itemLista = {
+            item: textBox.value,
             ano,
             dia,
-            mes
+            mes,
+            id: listaDeElementos.length
         }
+
         listaDeElementos.push(itemLista);
-        enviaLista()
+        localStorage.setItem('itens', JSON.stringify(listaDeElementos))
 
-        if (PaiLista.firstChild) {
-            PaiLista.insertBefore(containerItem, PaiLista.firstChild);
-        } else {
-            PaiLista.appendChild(containerItem);
-        }
-
-        textBox.value = '';
+        textBox.value = ''
+        criarNota();
     }
+    verificaBotoes()
 }
 
-listaDeElementos.forEach(itemLista => {
-    const containerItem = criaNota(itemLista.item, itemLista.ano, itemLista.dia, itemLista.mes);
-    if (PaiLista.firstChild) {
-        PaiLista.insertBefore(containerItem, PaiLista.firstChild);
-    } else {
-        PaiLista.appendChild(containerItem);
-    }
-});
+function verificaBotoes() {
+    botaoDelete = document.querySelectorAll('.botao-deletar');
+}
+verificaBotoes()
+
+botaoDelete.forEach(botao => botao.addEventListener('click', apagarItem));
+
+function apagarItem() {
+    const idBotao = this.id;
+    listaDeElementos.forEach((item, index) => {
+        if (idBotao == item.id) {
+            listaDeElementos.splice(index, 1);
+            criarNota();
+            localStorage.setItem('itens', JSON.stringify(listaDeElementos));
+        }
+    });
+}

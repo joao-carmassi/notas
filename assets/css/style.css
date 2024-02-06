@@ -89,7 +89,7 @@ div>div:nth-child(3) {
 
 .lista_tarefas {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     overflow-y: auto;
     height: 100%;
@@ -130,6 +130,11 @@ div>div:nth-child(3) {
     justify-content: center;
     line-height: normal;
     text-align: justify;
+}
+
+.tarefas__conteudo p {
+    word-wrap: break-word;
+    width: 100%;
 }
 
 img {
