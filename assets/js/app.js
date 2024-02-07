@@ -38,19 +38,17 @@ function criarNota() {
 
 
 function attLista() {
-    listaDeElementos = []
-    localStorage.setItem('itens', JSON.stringify(listaDeElementos));
-    // if (textBox.value != '') {
-    //     itemLista = getDate();
-    //     itemLista.item = textBox.value;
-    //     criarID();
+    if (textBox.value != '') {
+        itemLista = getDate();
+        itemLista.item = textBox.value;
+        criarID();
 
-    //     listaDeElementos.push(itemLista);
-    //     localStorage.setItem('itens', JSON.stringify(listaDeElementos));
+        listaDeElementos.push(itemLista);
+        localStorage.setItem('itens', JSON.stringify(listaDeElementos));
 
-    //     textBox.value = '';
-    //     criarNota();
-    // }
+        textBox.value = '';
+        criarNota();
+    }
 }
 
 function criarID() {
